@@ -4,6 +4,7 @@
 module.exports = function(environment) {
   let ENV = {
     modulePrefix: 'microtypes-info',
+    podModulePrefix: 'microtypes-info/pods',
     environment,
     rootURL: '/',
     locationType: 'auto',
