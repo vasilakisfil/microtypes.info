@@ -1,0 +1,16 @@
+.footer {
+  background-color: #FFF;
+  padding: 0;
+}
+.navbar-burger {
+  background-color: #FFF;
+  border-radius: 10%;
+}
+@media screen and (min-width: 1216px) {
+  .navbar {
+    background-color: #FFF !important;
+  }
+}
+.main-title {
+  margin-top: 50px;
+}
