@@ -8,7 +8,7 @@ const Router = EmberRouter.extend({
 
 Router.map(function() {
   this.route('index', { path: '/' });
-  this.route('about', { path: '/what-is-a-microtype' });
+  this.route('why', { path: '/why' });
 });
 
 export default Router;
