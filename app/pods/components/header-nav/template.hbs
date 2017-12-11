@@ -1,32 +1,22 @@
 <div class="hero-head">
-  <nav class="navbar">
+  <nav class="navbar is-fixed-top">
     <div class="container">
       <div class="navbar-brand">
-        <a class="navbar-item" href="../">
-        </a>
-        <span class="navbar-burger burger" data-target="navbarMenu">
+        <span class="navbar-burger burger {{isActiveClass}}" data-target="navbarMenu" onclick={{action "showMenu"}}>
           <span></span>
           <span></span>
           <span></span>
         </span>
       </div>
-      <div id="navbarMenu" class="navbar-menu">
+      <div id="navbarMenu" class="navbar-menu {{isActiveClass}}">
         <div class="navbar-end">
-          <a class="navbar-item is-active">
-            Overview
-          </a>
-          <a class="navbar-item">
-            Why ?
-          </a>
-          <a class="navbar-item">
-            What is a MicroType ?
-          </a>
-          <a class="navbar-item">
-            Examples
-          </a>
-          <a class="navbar-item">
-            Playground
-          </a>
+          {{#with (find-by 'isIndex' true model) as |person|}}
+            {{link-to "Overview" "index" class="navbar-item" activeClass="is-active"}}
+          {{/with}}
+
+          {{#each (sort-by 'index' (reject-by 'isIndex' model)) as |content|}}
+            {{link-to content.linkName "content" content.url class="navbar-item" activeClass="is-active"}}
+          {{/each}}
         </div>
       </div>
     </div>
