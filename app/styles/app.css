@@ -14,3 +14,6 @@
 .main-title {
   margin-top: 50px;
 }
+a.navbar-item.is-active {
+  background-color: #F5F5F5 !important;
+}
