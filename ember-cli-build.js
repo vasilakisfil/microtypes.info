@@ -27,5 +27,8 @@ module.exports = function(defaults) {
   // please specify an object with the list of modules as keys
   // along with the exports of each module as its value.
 
+  //enable only for dynamic option in ember-remarkable
+  //app.import('vendor/ember/ember-template-compiler.js');
+
   return new BroccoliMergeTrees([app.toTree(), ...[jsonTree]]);
 };

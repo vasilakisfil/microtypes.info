@@ -7,4 +7,5 @@ linkName: What is a MicroType ?
 index: 3
 ---
 
-
+Small + reusable + configurable
++reactive negotiation + Accept/Content-Type headers
