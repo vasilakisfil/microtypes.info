@@ -19,6 +19,10 @@ const {
   join,
 } = require('path');
 
+function camelCaseToDash(str) {
+  return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase()
+}
+
 /*
 const ContentSerializer = new Serializer('content', {
   id: 'path',
@@ -101,12 +105,8 @@ class BroccoliStaticSiteJson extends Plugin {
         switch (attr) {
           case '__content':
             return 'content';
-          case 'linkName': //FIX ME!!
-            return 'link-name';
-          case 'isIndex': //FIX ME!!
-            return 'is-index';
           default:
-            return attr;
+            return camelCaseToDash(attr);
         }
       },
     });
