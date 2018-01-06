@@ -16,11 +16,9 @@
     "test": "ember test"
   },
   "devDependencies": {
-    "@ember/guides-source": "github:ember-learn/guides-source#cleanup",
+    "ember-decorators": "^1.3.2",
     "babel-eslint": "^8.0.3",
     "broccoli-asset-rev": "^2.4.5",
-    "broccoli-plugin": "^1.3.0",
-    "broccoli-static-site-json": "^1.0.2",
     "ember-ajax": "^3.0.0",
     "ember-cli": "~2.16.2",
     "ember-cli-app-version": "^3.0.0",
@@ -36,7 +34,6 @@
     "ember-cli-uglify": "^2.0.0",
     "ember-composable-helpers": "^2.0.3",
     "ember-data": "~2.16.2",
-    "ember-decorators": "^1.3.2",
     "ember-devtools": "^6.0.0",
     "ember-export-application-global": "^2.0.0",
     "ember-load-initializers": "^1.0.0",
@@ -51,7 +48,8 @@
     "lodash.assign": "^4.2.0",
     "mkdirp": "^0.5.1",
     "walk-sync": "^0.3.2",
-    "yaml-front-matter": "^3.4.0"
+    "yaml-front-matter": "^3.4.0",
+    "ember-cli-markdown-as-json": "file:../../kollegorna/ember-cli-markdown-as-json"
   },
   "engines": {
     "node": "^4.5 || 6.* || >= 7.*"
