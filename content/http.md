@@ -1,11 +1,10 @@
 ---
-url: /
-name: Derek Worthen
-title: MicroTypes
-subtitle: Let's break down the monoliths of content negotiation
-linkName: Overview
-index: 1
-isIndex: true
+url: /microtypes-in-http
+name: Filippos Vasilakis
+title: MicroTypes in HTTP
+subtitle: Applying MicroTypes concept in HTTP
+linkName: MicroTypes in HTTP
+index: 4
 ---
 
 The current mechanism of content negotiation through Media Types in HTTP draws
@@ -27,3 +26,4 @@ a specific functionality of a modern API.
 
 The concept of MicroTypes is exactly that: **small, isolated, reusable, even confugrable, modules that compose a Media Type**
 and facilitate the evolvability of our API.
+

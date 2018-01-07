@@ -17,6 +17,8 @@
           {{#each (sort-by 'index' (reject-by 'isIndex' model)) as |content|}}
             {{link-to content.linkName "content" content.url class="navbar-item" activeClass="is-active"}}
           {{/each}}
+          {{#link-to "content" content.url class="navbar-item" activeClass="is-active"}}<strong>Playground</strong>
+          {{/link-to}}
         </div>
       </div>
     </div>
