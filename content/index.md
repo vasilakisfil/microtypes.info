@@ -21,21 +21,9 @@ Media Types are like black boxes: by trying to specify everything in an API resp
 they do not allow us to adapt them to our own needs. We have to either take it or leave it.
 
 If Software Engineering has learned us something,
-is that composition can enforce Single Responsibility Principle, if used correctly.
+is that **composition** can enforce Single Responsibility Principle, if used correctly.
 Media Types should be broken in smaller components, each describing very carefully
 a specific functionality of a modern API.
-The concept of MicroTypes is exactly that: small, reusable, even confugrable, modules that compose a Media Type.
 
-Microtypes in combination with reactive negotiation, a forgotten but still valid
-negotiation mechanism in HTTP, can give us enormous possibilities when designing
-a new API by allowing the API designers to tailor the API capabilities to their
-needs while at the same time it enables clients to negotiate parts of the API
-functionality that are only interested or understand and not the Media Type as
-a whole.
-
-Choosing between REST or GraphQL won’t be necessary as APIs can support both
-styles progressively, simultaneously, or asymmetrically for different classes
-of clients, using multiple sets of MicroTypes.
-
-
+The concept of MicroTypes is exactly that: **small, reusable, even confugrable, modules that compose a Media Type**.
 
