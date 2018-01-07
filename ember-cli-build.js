@@ -1,15 +1,8 @@
 /* eslint-env node */
 'use strict';
 
-const StaticSiteJson = require('./broccoli/markdown-to-json');
-
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
-const BroccoliMergeTrees = require('broccoli-merge-trees');
-
-const jsonTree =  new StaticSiteJson('content', {
-  contentFolder: 'content'
-});
 
 module.exports = function(defaults) {
   let app = new EmberApp(defaults, {});
@@ -30,5 +23,5 @@ module.exports = function(defaults) {
   //enable only for dynamic option in ember-remarkable
   //app.import('vendor/ember/ember-template-compiler.js');
 
-  return new BroccoliMergeTrees([app.toTree(), ...[jsonTree]]);
+  return app.toTree();
 };
