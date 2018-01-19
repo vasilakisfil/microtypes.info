@@ -26,4 +26,4 @@ Media Types should be broken in smaller components, each describing very careful
 a specific functionality of a modern API.
 
 The concept of MicroTypes is exactly that: **small**, **isolated**, **reusable**, even **confugrable**,
-**modules** that are **negotiable** and **discoverable** and compose a Media Type and facilitate the evolvability of our API.
+**modules** that are **negotiable** and **discoverable** which compose a Media Type and facilitate the evolvability of our API.

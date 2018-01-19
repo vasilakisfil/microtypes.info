@@ -8,7 +8,7 @@ index: 2
 ---
 
 ## From Media Types to MicroTypes
-_parts of this page were initially published in [blog.kollegorna.se](https://blog.kollegorna.se)_
+_Note: some contents of this page were first published in [blog.kollegorna.se](https://blog.kollegorna.se)_
 
 Hasn’t happened to you that, when building an API based on a well-known Media Type,
 you suddenly find out that it would have been better if you could introduce a
@@ -45,7 +45,7 @@ it should be able to parse and understand any part of the response.
 >
 > Roy Fielding
 
-If our Media Type is weak for our needs (in terms of semantic capabilities) and we
+If our Media Type is **semantically** weak for our needs and we
 require functionality that the Media Type does not describe, or we just want to
 alter some semantics of our Media Type (like adding URI templates in JSON:API),
 then we need to define another Media Type which will describe the new semantics
@@ -136,16 +136,17 @@ the core semantics of the Media Type but instead add specific ones for the profi
 
 Essentially, a profile should **never** ever alter the semantics of the Media Type used.
 Instead, it can only add complementary semantics.
+
 Regardless how powerful the Profile link relation is, our initial problem, which is
 being able to extend or even override the Media Type’s semantics in a non-backwards
 compatible but in a self-descriptive and evolvable way, is still unsolved.
 
 ### MicroTypes to the rescue
 What if you could keep your Media Type as is and compose it with a small module that
-would define the semantics of the links on your API?
+would (re)define the semantics of the links on your API?
 This semantic module could be either specific for JSON:API spec, or even more general one,
 which would benefit other API designers as well, although probably it would require
-substantially more toughness and rigorousness.
+substantially more thoughtness and rigorousness.
 
 For instance, you could publish your basic API as JSON:API with non-templated links
 but provide the ability for “smarter” clients to ask the more useful API semantics,
@@ -153,11 +154,12 @@ that include URI templates in the links.
 How can you do changes like this and still have self-descriptive messages in
 evolvable and sustainable APIs?
 
-Through small, reusable, configurable (per API) modules which are both self-discoverable and negotiable, called MicroTypes.
+Through small, reusable, configurable (per API) modules which are both discoverable and negotiable, called MicroTypes.
 
-How you can do that in practice? As we define in FOOBAR, you can do that currently using Media Type parameters.
+How you can do that in practice? As we define in <a href="/microtypes-in-http">MicroTypes in HTTP</a> section,
+you can do that currently using Media Type parameters.
 Imagine that your newly created MicroType is named `json-api-templated-links`, which define pretty well the new
-semantics of your API, essentially the templated links used instead of the plain ones, in JSON:API.
+semantics of your API, i.e. using templated links instead of plain ones, in JSON:API.
 
 A client can negotiate for the conventional JSON:API Media Type as usual:
 
@@ -179,38 +181,90 @@ Since the API supports that MicroType, it can respond with that modified Media T
 Accept: application/vnd.api+json; linking=json-api-templated-links;
 ```
 
-### Reusability is the key
-By deriving common extensions to well known Media Types, we will end up with reusable MicroTypes that
-different API designers can use and combine together.
-Reusability is a key in MicroTypes concept, something that, unfortunately, is missing from [The 'profile' Link Relation Type](https://tools.ietf.org/html/rfc6906).
-
-### Asymmetric evolution of your API
-What if you want to evolve your API, one (semantic) feature at a time.
-
-### Discovery and negotiation!
-First, by allowing the client and server to do the regular negotiation flow even for those sub-media-types, the communication
-between the 2 ends is parameterized to the needs of the client, down to the semantics level.
-For instance, a server might provide 3 MicroTypes for error information, each one having different representation or semantics.
-By letting the server to decide the appropriate MicroType for the client by analyzing the client's incoming request,
-might not be efficient as the client can only send a part of its properties through the request, for various reasons like privacy concerns and performance,
-and thus the server has **partial knowledge** of the client's state and properties.
-The server has to make an arbitrary choice for the client, what it thinks it's thinks best, using this partial knowledge.
-
-Instead, by giving the client the option to negotiate parts of the API functionality, we shift the responsibility towards the client
-to select the best representation and semantics of various, isolated, API functionalities.
-Given that the client can know much more about its needs than the server, it will make the best available choice
-for each API functionality, from the server's options, which eventually will lead to the optimized combination of
-MicroTypes.
-As we will see later, in HTTP protocol, this is called reactive negotiation, a forgotten but still valid negotiation mechanism.
-
-
-The benefits when leveraging such architecture are multi-fold.
-
-
-Secondly, the MicroTypes specs and possibly implementations can be re-used by both the servers and clients.
+#### Reusability is the key
+The MicroTypes specs and possibly implementations can be re-used by both the servers and clients.
 Instead of defining a whole Media Type, API designers will be able to include various small modules
 that extend the API functionality they way it's needed.
 We firmly believe that once the community defines a number of MicroTypes, it will be much easier for an API designer
 to design a new API by reusing the MicroTypes she thinks fit best to her needs.
+Reusability is a key in MicroTypes concept, something that, unfortunately, is missing from
+[The 'profile' Link Relation Type](https://tools.ietf.org/html/rfc6906) RFC.
 
-+profiles
+#### Granularity to the needs of the client
+By allowing the client and server to do the regular negotiation flow even for
+those sub-media-types, the communication between the 2 ends is parameterized to the
+needs of the client, down to the semantics level.
+For instance, a server might provide 3 MicroTypes for error information, each one
+having different representation or semantics and targeting different class of machines.
+
+#### Negotiation through discovery
+_Note: discovery is not a requirement for a MicroType_
+
+In conventional (i.e. preactive) negotiation, the server decides the appropriate MicroType
+for the client by analyzing the client's incoming request.
+Unfortunately, proactive negotiation is not always as efficient because
+the client can only send a part of its properties through
+the request, for various reasons like privacy concerns and performance,
+and thus the server has **partial knowledge** of the client's state and properties.
+The server has to make an arbitrary choice for the client, what it thinks it's
+thinks best, using this partial knowledge.
+
+Interestingly, [RFC 7231](https://tools.ietf.org/html/rfc7231) notes that proactive negotiation has
+some serious disadvantages:
+
+>   Proactive negotiation has serious disadvantages:
+>
+>   o  It is impossible for the server to accurately determine what might
+>      be "best" for any given user, since that would require complete
+>      knowledge of both the capabilities of the user agent and the
+>      intended use for the response (e.g., does the user want to view it
+>      on screen or print it on paper?);
+>
+>   o  Having the user agent describe its capabilities in every request
+>      can be both very inefficient (given that only a small percentage
+>      of responses have multiple representations) and a potential risk
+>      to the user's privacy;
+>
+>   o  It complicates the implementation of an origin server and the
+>      algorithms for generating responses to a request; and,
+>
+>   o  It limits the reusability of responses for shared caching.
+>
+> --- [RFC 7231](https://tools.ietf.org/html/rfc7231)
+>
+
+In fact, from the beginnings of HTTP (since [RFC 2068](https://tools.ietf.org/html/rfc2068#section-12.2), published in 1997),
+the protocol allowed another negotiation type: agent-driven or reactive content negotiation negotiation,
+that matches very well the MicroTypes concept.
+As [RFC 7231](https://tools.ietf.org/html/rfc7231) notes, in reactive content negotiation the server provides a
+list of options to the client to choose from.
+
+>  With reactive negotiation (a.k.a., agent-driven negotiation),
+>   selection of the best response representation (regardless of the
+>   status code) is performed by the user agent after receiving an
+>   initial response from the origin server that contains a list of
+>   resources for alternative representations.
+>
+>   (...)
+>
+>   A server might choose not to send an initial representation, other
+>   than the list of alternatives, and thereby indicate that reactive
+>   negotiation by the user agent is preferred.  For example, the
+>   alternatives listed in responses with the 300 (Multiple Choices) and
+>   406 (Not Acceptable) status codes include information about the
+>   available representations so that the user or user agent can react by
+>   making a selection.
+>
+> --- [RFC 7231](https://tools.ietf.org/html/rfc7231)
+>
+
+With reactive negotiation, the client is responsible for choosing the most appropriate representation,
+according to its needs.
+By giving the client the option to negotiate parts of the API functionality,
+we shift the responsibility towards the client
+to select the best representation and semantics of various, isolated, API functionalities.
+Given that the client can know much more about its needs than the server, it will
+make the best available choice for each API functionality, from the server's options,
+which eventually will lead to the optimized combination of MicroTypes.
+As we see, in <a href="/microtypes-in-http">MicroTypes in HTTP</a> section, this is called
+reactive negotiation, a forgotten but still valid negotiation mechanism.

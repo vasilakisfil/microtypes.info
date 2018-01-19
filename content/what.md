@@ -11,7 +11,8 @@ A MicroType is defined as a small, isolated, reusable, configurable module.
 
 ## Small
 The semantics that a MicroType defines should be small in scope.
-The MicroType could extend, semantically, an existing Media Type, or it could 
+The MicroType could extend, semantically, an existing Media Type, redefine some parts
+of a MicroType, or it could
 just specify a common reusable semantically pattern, to be used accross different
 types of Media Types.
 
@@ -38,11 +39,11 @@ aim and provide the available specifications for more broad use.
 ## Configurable
 Although configurability of a MicroType is optional, it's highly recommended to
 add support for it.
-The reason is that not all API designers thing and act the same way and consequently,
+The reason is that not all API designers think and act the same way and consequently,
 being able to configure MicroTypes would maximize the reusability and lead to
 
 ### An example: a pagination MicroType
-For instance, imagine that we create a MicroType that defines the semantics of 
+For instance, imagine that we create a MicroType that defines the semantics of
 pagination for both request and response. So let's say that we specify that
 the client can specify that it can request the page, the size and the offset
 using `page`, `per_page`, and `offset` query parameters.
@@ -56,10 +57,11 @@ Or we should be able to specify the location of the pagination object inside the
 response, using [JSON pointer](https://tools.ietf.org/html/rfc6901).
 
 ## Module
-Discoverability, negotiation
-
-Small + reusable + configurable
-+reactive negotiation + Accept/Content-Type headers
+A MicroType is a module after all, meaning that its specification should define
+anything is needed related with its use by the API designers and the API consumers.
+For instance, although discovery is not part of the MicroType it self, the spec
+should go through the negotiation and discovery methods briefly and specify or
+clarify anything that might be needed or be helpful respectively to the MicroType users.
 
 ### Discoverability
 Ideally a MicroType-based API should also support discoverability of the MicroTypes it
