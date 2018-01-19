@@ -39,7 +39,12 @@ aim and provide the available specifications for more broad use.
 Although configurability of a MicroType is optional, it's highly recommended to
 add support for it.
 The reason is that not all API designers think and act the same way and consequently,
-being able to configure MicroTypes would maximize the reusability and lead to
+being able to configure MicroTypes would maximize the reusability.
+
+From the client-perspective configurability is called **introspection**, meaning that
+the client can introspect a MicroType's introspection endpoint (defined in the MicroType
+itself in combination with the parent Media Type) to figure out the
+adaptations performed of the MicroType for the given API.
 
 ### An example: a pagination MicroType
 For instance, imagine that we create a MicroType that defines the semantics of

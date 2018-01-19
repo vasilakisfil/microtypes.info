@@ -19,4 +19,3 @@ configurability properties.
 * **Sept 2017**: The first reference for MicroTypes was made through [introspected.rest](https://introspected.rest),
 published by Filippos Vasilakis. It was an effort to challenge conventional
 REST principles and bridge the gap between REST and RPC.
-

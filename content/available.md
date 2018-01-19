@@ -6,13 +6,16 @@ linkName: Available MicroTypes
 index: 5
 ---
 
+**We are on special need for general purpose push/update MicroTypes for any (API-related) Media Type.**
 
-Currently, Media Types act as big monoliths that clients need to understand beforehand through human involvement.
-Today's APIs are very powerful and being complex require a huge monolith for machines
-We believe that Media Types should be broken in smaller
-reusable media types, MicroTypes, each describing very carefully a specific functionality of a modern API.
-The reasoning is that, in our experience, we have seen that different APIs and API specs define the same functionalities in similar,
-but not identical, ways.
+At the moment we are working on a `querying over url` MicroType inspired by
+[`active_hash_relation`](https://github.com/kollegorna/active_hash_relation) library and a pagination
+MicroType with configurability capabilities.
+
+If you have done any related work in your API, from linked data down to the wire level,
+please consider wrapping it in a small MicroType and publish it so other can use it.
+Just ping us here so we can add a link :)
+
 
 Examples of MicroTypes could be semantics for:
 * pagination
