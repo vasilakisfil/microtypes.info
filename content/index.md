@@ -1,11 +1,10 @@
 ---
 url: /
-name: Derek Worthen
 title: MicroTypes
 subtitle: Let's break down the monoliths of content negotiation
 linkName: Overview
 index: 1
-isIndex: true
+excludeNav: true
 ---
 
 The current mechanism of content negotiation through Media Types in HTTP draws

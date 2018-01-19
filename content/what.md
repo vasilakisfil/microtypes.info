@@ -1,6 +1,5 @@
 ---
 url: what-is-a-microtype
-name: Derek Worthen
 title: MicroTypes
 subtitle: Small, reusable, configurable Modules for the APIs
 linkName: MicroType definition
@@ -63,8 +62,16 @@ For instance, although discovery is not part of the MicroType it self, the spec
 should go through the negotiation and discovery methods briefly and specify or
 clarify anything that might be needed or be helpful respectively to the MicroType users.
 
-### Discoverability
+### Discoverable
 Ideally a MicroType-based API should also support discoverability of the MicroTypes it
 supports, but that's not part of a MicroType definition.
+Discoverability is responsibility of the MicroType-powered API through reactive negotiation.
 
-### Negotiatable
+### Negotiable
+Each MicroType is negotiable using Media Type parameters, which although rarely used,
+are perfectably valid.
+Using negotiation, the client can trim the API for its needs down to the semantics level.
+Even the same client can request a different combination of MicroTypes based on its
+current status at the given time. For instance, if the client has critical hardware issues
+or its battery level is at extremeley low levels, it could request hypermedia using
+`Link` header to avoid parsing the HTTP body.

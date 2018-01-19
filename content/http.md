@@ -1,6 +1,5 @@
 ---
 url: microtypes-in-http
-name: Filippos Vasilakis
 title: MicroTypes in HTTP
 subtitle: Applying MicroTypes concept in HTTP
 linkName: MicroTypes in HTTP

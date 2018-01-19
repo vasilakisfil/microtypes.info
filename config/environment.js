@@ -30,20 +30,16 @@ module.exports = function(environment) {
     'ember-cli-markdown-as-json': {
       folder: 'content',
       contentFolder: 'content',
-      /*
       attributes: {
         index: 'number',
-        isIndex: 'boolean',
+        excludeNav: 'boolean',
         linkName: 'string',
         name: 'string',
         path: 'string',
         subtitle: 'string',
         title: 'string',
         url: 'string'
-      },*/
-      attributes: [
-        'index', 'isIndex', 'linkName', 'name',  'path', 'subtitle',  'title', 'url'
-      ]
+      },
     }
   };
 

@@ -10,151 +10,158 @@ index: 2
 ## From Media Types to MicroTypes
 _Note: some contents of this page were first published in [blog.kollegorna.se](https://blog.kollegorna.se)_
 
-Hasn’t happened to you that, when building an API based on a well-known Media Type,
-you suddenly find out that it would have been better if you could introduce a
-small change ?
-For instance, imagine that you build an API based on JSON:API spec,
-however you really want to have templated URIs on links.
+Has it ever happened to you that, when building an API based on a well-known
+Media Type, you suddenly realize that it would have been better if you could
+introduce a small change ? For instance, imagine that you build an API based on
+[JSON:API](http://jsonapi.org) spec, but you really want to have templated URIs
+on links.
 
-Unfortunately you can’t do anything about it, more or less.
-Your available options are:
-* **breaking the Media Type**: the least thing you want because you would break one
-of the REST’s constraints: self-descriptive messages.
-By breaking the Media Type that the client accepts, the client won’t understand
-your content leading to undefined behavior.
-* **creating a new Media Type**: not very easy option because creating a new Media
-Type is a lengthy, rigorous, process and should generally be avoided.
-But it doesn’t make much sense either: creating a whole new Media Type just for
-a tiny change ?
-* **creating a profile using the RFC 6906**: saying that our API follows more specific
-constraints than our announced Media Type seems quite helpful.
-But is this really what we want to solve here?
+Unfortunately you can’t do much about it. Your available options are:
 
-Let’s see each one of those options in details.
+* **breaking the Media Type**: the last thing you want because you would break one
+of the REST’s constraints: self-descriptive messages. By breaking the Media Type
+that the client accepts, the client won’t understand your content, leading to
+undefined behavior.
+* **creating a new Media Type**: not a very easy option because creating a new
+Media Type is a lengthy, rigorous  process and should generally be avoided. But
+it doesn’t make much sense either: creating a whole new Media Type just for a
+tiny change?
+* **creating a profile using the** [RFC6906](https://www.ietf.org/rfc/rfc6906.txt): saying that our API follows more
+specific constraints than our announced Media Type seems quite helpful. But is
+this really what we want to solve here?
 
-#### Breaking our announced Media Type
-One of the main REST constraints is **representations are exchanged via self-descriptive messages**.
-This means that the data of the response should follow the Media Type that the client
-requested and understands.
-Given that the client negotiated for that Media Type,
-it should be able to parse and understand any part of the response.
+Let’s go over each of these options in detail.
+
+#### Breaking our announced Media Type
+
+One of the main REST constraints is that **representations are exchanged via
+self-descriptive messages***. *This means that the data of the response should
+follow the Media Type that the client requested and understands. Given that the
+client negotiated for that Media Type, it should be able to parse and understand
+any part of the response.
 
 > Interaction is stateless between requests, standard methods and Media Types are
-> used to indicate semantics and exchange information,
-> and responses explicitly indicate cacheability.
+> used to indicate semantics and exchange information, and responses explicitly
+> indicate cacheability.
 >
 > Roy Fielding
 
-If our Media Type is **semantically** weak for our needs and we
-require functionality that the Media Type does not describe, or we just want to
-alter some semantics of our Media Type (like adding URI templates in JSON:API),
-then we need to define another Media Type which will describe the new semantics
-and wait until client(s) incorporate the new Media Type changes.
+If our Media Type is weak for our needs (in terms of semantic capabilities) and
+we require functionality that the Media Type does not describe, or we just want
+to alter some semantics of our Media Type (like adding URI templates in
+JSON:API), then we need to define another Media Type which will describe the new
+semantics and wait until client(s) incorporate the new Media Type changes.
 
-Breaking our Media Type’s semantics, or just extending them with new functionality,
-will have exactly the same result for the client: not self-descriptive messages
-that will require out-of-band information, like documentation, or will lead to
-undefined behavior.
-In any case, the result is quite counter productive for the machines and obviously
-that’s the worst option we could choose, yet it’s a popular one :/
+Breaking our Media Type’s semantics, or just extending them with new
+functionality, will have exactly the same result for the client: not
+self-descriptive messages that will require out-of-band information, like
+documentation, or will lead to undefined behavior. In any case, the result is
+quite counter productive for the machines and obviously that’s the worst option
+we could choose, yet it’s a popular one :/
 
-#### Defining and publishing a new Media Type
-Why not defining a new Media Type, just as how our Internet architecture currently works ?
+#### Defining and publishing a new Media Type
 
-Well, although that’s technically correct, it leads to many side-effects and problems
-down the line.
-One of the the biggest obstacles of such solution is the fact that defining a whole
-new Media Type is quite tough.
-Moreover, in theory, when you override a Media Type spec, you need to publish your
-changes as a complete custom Media Type for humans to go through it and program
-their client accordingly.
-Of course, once the client is programmed, the same implementation can be reused
-for many different APIs, that follow this new custom Media Type.
+Why not define a new Media Type, just as how our Internet architecture currently
+works ?
 
-Creating a complete new Media Type, even extending semantically an existing one
-is difficult.
-If you can do that then that’s great! Probably you are a rock star as well.
-Unfortunately very few people can do that (hey, that’s why we have the whole RFC process!).
-As a result, what happens in practice is that we just push unpublished
-(to the machines) changes on our API and then we hand off out-of-band information
-to the client, like documentation, and demand humans to check them before parsing
-and using the hypermedia semantics of our API.
+Well, although that’s technically correct, it leads to many side-effects and
+problems down the line. One of the the biggest obstacles of such solution is the
+fact that defining a whole new Media Type is quite tough. Moreover, in theory,
+when you override a Media Type spec, you need to publish your changes as a
+complete custom Media Type for *humans* to go through it and program their
+client accordingly. Of course, once the client is programmed, the same
+implementation can be reused for many different APIs that follow this new custom
+Media Type.
 
-So while this option is the way to go, that’s a tough options and experience has
-shown that it’s only in theory, in practice we end up in option 1 through a
-different path :/
+Creating a complete new Media Type, or even semantically extending an existing
+one is difficult. If you can do that then that’s great! Probably you are a rock
+star as well. Unfortunately very few people can do that (hey, that’s why we have
+the whole [RFC](https://en.wikipedia.org/wiki/Request_for_Comments) process!).
+As a result, what happens in practice is that we just push unpublished (to the
+machines) changes on our API and then we hand off out-of-band information to the
+client, like documentation, and demand *humans* to check them before parsing and
+using the hypermedia semantics of our API.
 
-#### The ‘profile’ Link Relation Type
-Erik Wilde suggested a profiling mechanism of the underlying Media Type through
-the HTTP Link header, that was later published as RFC 6906.
+So while this option is the way to go, it’s tough and experience has shown that
+it’s rarely done, in practice we end up with option 1 through a different path
+:/
 
-> A profile is defined not to alter the semantics of the resource representation itself,
-> but to allow clients to learn about additional semantics (constraints, conventions,
-> extensions) that are associated with the resource representation, in addition to
-> those defined by the media type and possibly other mechanisms.
+#### The ‘profile’ Link Relation Type
+
+[Erik Wilde](http://dret.net/netdret/) suggested a profiling mechanism of the
+underlying Media Type through the [HTTP Link
+header](https://tools.ietf.org/html/rfc5988), that was later published as [RFC
+6906](https://tools.ietf.org/html/rfc6906).
+
+> A profile is defined not to alter the semantics of the resource representation
+> itself, but to allow clients to learn about additional semantics (constraints,
+> conventions, extensions) that are associated with the resource representation,
+> in addition to those defined by the media type and possibly other mechanisms.
 >
 > [RFC 6906](https://www.ietf.org/rfc/rfc6906.txt)
 
 Essentially, the profile parameter, given that the client understands it, would
-define **additional, more specific** semantics of the response’s representation that
-are not defined through the Media Type used.
-The information for the additional semantics would be found in all responses
-regardless the client but only the “smarter” clients would be able to parse,
-understand and use this information whereas the rest would just ignore it.
+define **additional, more specific** semantics of the response’s representation
+that are not defined through the Media Type used. The information for the
+additional semantics would be found in all responses regardless the client but
+only the “smarter” clients would be able to parse, understand and use this
+information whereas the rest would just ignore it.
 
 Unfortunately the RFC fails to advocate towards reusable profiles:
 
 > While this specification associates profiles with resource representations,
 > creators and users of profiles MAY define and manage them in a way that allows
 > them to be used across media types; thus, they could be associated with a
-> resource, independent of their representations (i.e., using the same profile
-> URI for different media types).
-> However, such a design is outside of the scope of this specification, and clients
-> SHOULD treat profiles as being associated with a resource representation.
+> resource, independent of their representations (i.e., using the same profile URI
+> for different media types). However, such a design is outside of the scope of
+> this specification, and clients SHOULD treat profiles as being associated with a
+> resource representation.
 >
 > [RFC 6906](https://www.ietf.org/rfc/rfc6906.txt)
 
-By having profiles attached to specific Media Types results in much less
+By having profiles attached to specific Media Types this results in much less
 adoptability and flexibility and fails to signal the actual practicability of
-such architecture.
-Another issue is the fact that negotiation part is skipped from the RFC,
-something that probably is a requirement if we want to target evolvable,
-sustainable, self-described APIs.
+such architecture. Another issue is the fact that the negotiation part is
+skipped from the RFC, something that probably is a requirement if we want to
+target evolvable, sustainable, self-described APIs.
 
-But the most important thing about this concept is that **it solves a different problem**.
-Erik has repeatedly explained that the profile mechanism should not be used for altering
-the core semantics of the Media Type but instead add specific ones for the profile specified:
+But I think the most important thing about this concept is that **it solves a
+different problem**. From my personal talks with Erik, he is not very fond of
+altering the core semantics of the Media Type but instead add specific ones for
+the profile specified:<br> <br>
 
-> (…) what drove the RFC is the ability to identify specific extensions/constraints,
-> with the feed/podcast example being a very typical one: feed is a widely used media type,
-> but there also is a good ecosystem of just podcast/media feeds applications.
-> the feed/profile model works well for making sure that one can talk about podcasts,
-> while it always remains clear that a podcast is a regular feed. (…)
-> They are simply a signal saying “i am using media type X but i am using it with additional constraints”
+> (…) what drove the RFC is the ability to identify specific
+> extensions/constraints, with the feed/podcast example being a very typical one:
+> feed is a widely used media type, but there also is a good ecosystem of just
+> podcast/media feeds applications. the feed/profile model works well for making
+> sure that one can talk about podcasts, while it always remains clear that a
+> podcast is a regular feed. (…) They are simply a signal saying “i am using media
+> type X but i am using it with additional constraints”
 >
 > Erik Wilde
 
-Essentially, a profile should **never** ever alter the semantics of the Media Type used.
-Instead, it can only add complementary semantics.
+Essentially, a profile should **never** **ever** alter the semantics of the
+Media Type used. Instead, it can only add complementary semantics.
 
-Regardless how powerful the Profile link relation is, our initial problem, which is
-being able to extend or even override the Media Type’s semantics in a non-backwards
-compatible but in a self-descriptive and evolvable way, is still unsolved.
+Regardless how powerful the Profile link relation is, our initial problem, which
+is being able to extend or even override the Media Type’s semantics in a
+non-backwards compatible but self-descriptive and evolvable way, is still
+unsolved.
 
 ### MicroTypes to the rescue
-What if you could keep your Media Type as is and compose it with a small module that
-would (re)define the semantics of the links on your API?
-This semantic module could be either specific for JSON:API spec, or even more general one,
-which would benefit other API designers as well, although probably it would require
-substantially more thoughtness and rigorousness.
+What if you could keep your Media Type as is and compose it with a small module
+that would define the semantics of the links on your API? This semantic module
+could be either specific for [JSON:API](http://jsonapi.org) spec, or even more
+general one, which would benefit other API designers as well, although probably
+it would require substantially more thought and rigour.
 
-For instance, you could publish your basic API as JSON:API with non-templated links
-but provide the ability for “smarter” clients to ask the more useful API semantics,
-that include URI templates in the links.
-How can you do changes like this and still have self-descriptive messages in
-evolvable and sustainable APIs?
+For instance, you could publish your basic API as JSON:API with non-templated
+links but provide the ability for “smarter” clients to ask the more useful API
+semantics, that include URI templates in the links. How can you do changes like
+this and still have self-descriptive messages in evolvable and sustainable APIs?
 
-Through small, reusable, configurable (per API) modules which are both discoverable and negotiable, called MicroTypes.
+Through **small**, **reusable**, **configurable** (per API) modules which are
+both **discoverable** and **negotiable**, called MicroTypes.
 
 How you can do that in practice? As we define in <a href="/microtypes-in-http">MicroTypes in HTTP</a> section,
 you can do that currently using Media Type parameters.
