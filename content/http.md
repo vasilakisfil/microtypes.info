@@ -9,12 +9,78 @@ index: 4
 MicroTypes concept is not bound to any protocol or spec, however it is expected to mostly
 be used in HTTP.
 Here we will review how the concept can easily be applied in HTTP protocol.
-For instance, we need to solve issues like announcement and negotiation of MicroTypes bound to a Media Type,
+For instance, we will see how to solve issues like announcement and negotiation of MicroTypes bound to a Media Type,
 priority order in case of overlaps or collisions, identification, and
 the actual introspection process to get the MicroType's configuration, in HTTP.
 
-### Revisiting content negotiation in HTTP
-As we have already seen, content negotiation in HTTP is achieved through `Accept` request header but it's not the
+## Negotiation
+The negotiation of MicroTypes could follow the regular negotiation flow, i.e. proactive negotiation flow:
+the client should negotiate for the principal Media Type using the `Accept` request
+header and the server responds with `Content-Type` response header, denoting the selected representation.
+
+However the key difference is that for each principal Media Type, it should also
+negotiate for the MicroTypes to be used with it.
+For that, we will employ the Media Type parameters, a rarely used mechanism:
+
+>  Media types MAY elect to use one or more media type parameters, or
+>   some parameters may be automatically made available to the media type
+>   by virtue of being a subtype of a content type that defines a set of
+>   parameters applicable to any of its subtypes.  In either case, the
+>   names, values, and meanings of any parameters MUST be fully specified
+>   when a media type is registered in the standards tree, and SHOULD be
+>   specified as completely as possible when media types are registered
+>   in the vendor or personal trees.
+>
+>   Parameter names have the syntax as media type names and values:
+>
+>       parameter-name = restricted-name
+>
+> --- [RFC 6838](https://tools.ietf.org/html/rfc6838)
+>
+
+An example of an imaginary Media Type with a couple of parameters for MicroTypes is:
+
+```
+Accept: application/vnd.api+json; pagination=simple-spec; querying=graphql;
+```
+
+In the aforementioned example, the client asks for representation of `application/vnd.api+json`,
+(which vaguely means a vendor application that follows the semantics of `api`, in JSON representation)
+but wants the pagination to follow the semantics of `simple-spec` and the querying language of `graphql`.
+
+The client can even set a preference order:
+
+```
+Accept: application/vnd.api+json; pagination=simple-spec; querying=graphql; querying=jsonapi;
+```
+
+Here the client shows preference to the imaginary `graphql` querying language but if that doesn't exist
+then it will accept the `jsonapi` querying language.
+It should be noted that this preference is different from a Media Type preference using the relative
+weight `q` parameter (also called quality value) as it applies to the MicroType level.
+An example with multiple Media Types could be:
+
+```
+Accept: application/vnd.api+json; pagination=simple-spec; querying=graphql; querying=jsonapi,
+        application/vnd.api2+json; pagination=simple-spec; querying=jsonapi; querying=jsonapi; q=0.9
+```
+
+In this example the client shows preference to the `application/vnd.api+json` Media Type (it has default quality value of 1.0)
+with specific preferences on MicroType level, as we explained above.
+However if this Media Type is not available then it will accept the next most preferred, `application/vnd.api2+json`, by requesting
+specific MicroTypes.
+
+If the server can provide only the less preferred Media Type with the less preferred querying it would answer:
+```
+Content-Type: application/vnd.api2+json; pagination=simple-spec; querying=graphql
+```
+
+## Discovery
+Note that discovery semantics are not responsibility of a MicroType but instead of the
+API itself through the parent Media Type.
+
+#### Revisiting content negotiation in HTTP
+It is well known that content negotiation in HTTP is achieved through `Accept` request header but it's not the
 only header which can be used by the server to determine the appropriate representation for the client.
 `Accept-Charset`, `Accept-Encoding`, `Accept-Language` request headers can also be used.
 In practice, `User-Agent` header is also used by the server for choosing the right content for the client
@@ -26,12 +92,9 @@ to be served to the client.
 
 This hint-based mechanism, which according to [RFC 7231](https://tools.ietf.org/html/rfc7231) is called server-driven
 or proactive content negotiation, has been extensively used in HTTP protocol.
-In the context of MicroTypes and Introspected REST, using this mechanism, the client
-can negotiate for [runtime MicroTypes](#102-runtime-microtypes): API functionalities that define semantics
-for the data and runtime metadata.
-This type of MicroTypes, should tend to appear less often because
-if anything can be introspected on the side instead of runtime, it will be
-defined as non-runtime, introspective metadata.
+In the context of MicroTypes, we already saw in the previous section that using this mechanism, the client
+can negotiate apart from the main Media Type, MicroTypes which define API functionalities or semantics
+for interacting with the API or the representation itself.
 
 Interestingly, [RFC 7231](https://tools.ietf.org/html/rfc7231) notes that proactive negotiation has
 some serious disadvantages:
@@ -58,8 +121,8 @@ some serious disadvantages:
 >
 
 In fact, from the beginnings of HTTP (since [RFC 2068](https://tools.ietf.org/html/rfc2068#section-12.2), published in 1997),
-the protocol allowed another negotiation type: agent-driven or reactive content negotiation negotiation,
-that matches very well our introspective concept.
+the protocol allowed another negotiation type: agent-driven or reactive content negotiation,
+that matches very well our discovery concept.
 As [RFC 7231](https://tools.ietf.org/html/rfc7231) notes, in reactive content negotiation the server provides a
 list of options to the client to choose from.
 
@@ -89,85 +152,11 @@ uses the ones that best fit to its use case or understands better.
 As the RFC notes, such negotiation has the advantage of choosing the best combination of MicroTypes,
 because the client does the selection out of a predefined list that the server publishes.
 
-### 10.2. Runtime MicroTypes
-Runtime MicroTypes are targeted for API functionality that is used during the request/response cycle
-of plain data.
-Such functionality could be pagination, URI  querying language, error descriptions etc or it could even be
-semantics around the data itself.
-It should also be noted that **even runtime MicroTypes could have content for introspection** but the key difference
-from pure introspective MicroTypes is that part of their functionality affects the semantics of the client's request
-or server's response.
-
-The negotiation of runtime MicroTypes should follow the regular negotiation flow:
-The client should negotiate for the principal Media Type using the `Accept` request
-header and the server responds with `Content-Type` response header, denoting the selected representation.
-However the key difference is that for each principal Media Type, it should also
-negotiate for the MicroTypes to be used with it.
-For that, we will employ the Media Type parameters, a rarely used mechanism:
-
->  Media types MAY elect to use one or more media type parameters, or
->   some parameters may be automatically made available to the media type
->   by virtue of being a subtype of a content type that defines a set of
->   parameters applicable to any of its subtypes.  In either case, the
->   names, values, and meanings of any parameters MUST be fully specified
->   when a media type is registered in the standards tree, and SHOULD be
->   specified as completely as possible when media types are registered
->   in the vendor or personal trees.
->
->   Parameter names have the syntax as media type names and values:
->
->       parameter-name = restricted-name
->
-> --- [RFC 6838](https://tools.ietf.org/html/rfc6838)
->
-
-An example of an imaginary Media Type with a couple of parameters for MicroTypes is:
-
-```
-Accept: application/vnd.api+json; pagination=simple-spec; querying=graphql;
-```
-
-In the aforementioned example, the client asks for representation of `application/vnd.api+json`,
-(which as we have seen earlier it vaguely means a vendor application that follows the semantics of `api`, in JSON representation)
-but wants the pagination to follow the semantics of `simple-spec` and the querying language of `graphql`.
-
-The client should be able to even set a preference order:
-
-```
-Accept: application/vnd.api+json; pagination=simple-spec; querying=graphql; querying=jsonapi;
-```
-Here the client shows preference to the imaginary `graphql` querying language but if that doesn't exist
-then it will accept the `jsonapi` querying language.
-It should be noted that this preference is different from a Media Type preference using the relative
-weight `q` parameter (also called quality value) as it applies to the MicroType level.
-An example with multiple Media Types could be:
-
-```
-Accept: application/vnd.api+json; pagination=simple-spec; querying=graphql; querying=jsonapi, application/vnd.api2+json; pagination=simple-spec; querying=jsonapi; querying=jsonapi; q=0.9
-```
-
-In this example the client shows preference to the `application/vnd.api+json` Media Type (it has default quality value of 1.0)
-with specific preferences on MicroType level, as we explained above.
-However if this Media Type is not available then it will accept the next most preferred, `application/vnd.api2+json`, by requesting
-specific MicroTypes.
-
-If the server can provide only the less preferred Media Type with the less preferred querying it would answer:
-```
-Content-Type: application/vnd.api2+json; pagination=simple-spec; querying=graphql
-```
-
-
-### 10.3. Introspective MicroTypes
-Introspective MicroTypes don't alter the semantics of request/response cycle but are still valuable to the client
-and the decisions they should take based on the current state and the input from the application developer.
-They can provide information about the data types, RDF Schema of the resources, etc.
-Introspective MicroTypes should employ reactive negotiation.
-
 The question though is **how can the server advertise the availability of MicroTypes for the client
-to introspect.**
+to select.**
 Ideally we would like to inform the client for all possible options through HTTP instead of employing a serialization format.
 Unfortunately, the HTTP protocol doesn't say much about this type of negotiation, only that the status code when requesting
-such information should be 300 and `Link` relation header of [RFC 5988](https://tools.ietf.org/html/rfc5988) could be potentially used
+such information should be 300 and `Link` relation header of [RFC 5988](https://tools.ietf.org/html/rfc5988) could potentially be used
 to provide the list with all the available options,
 mostly for historical reasons that date back to [RFC 2068](https://tools.ietf.org/html/rfc2068#section-12.2):
 
@@ -200,10 +189,9 @@ mostly for historical reasons that date back to [RFC 2068](https://tools.ietf.or
 
 To our knowledge, **reactive negotiation has never been analyzed, used or suggested before**.
 Here, apart from `Link` relation header, we also suggest two more alternative implementation to solve
-this issue and we will let the community to choose what is the more appropriate solution.
+this issue and we will let the MicroType designer to choose what is the more appropriate solution.
 
-
-#### 10.4.1 The HTTP OPTIONS method
+#### Discovery through HTTP OPTIONS method
 The server can describe the meta-data of a resource in the response body of the `OPTIONS` request.
 In fact, OPTIONS method has historically been used for getting information on methods supported on a specific resource.
 
@@ -241,7 +229,7 @@ to the root url.
 However, we feel that this is the perfect case for hosting an API's discovery for available capabilities using
 reactive negotiation.
 We could keep the `/*` for "ping" or "no-op" type of method as the RFC notes and have the root
-`/` for listing all API's capabilities through MicroTypes for all resources, as [IATEOAS](#935-api-bootstraping) denotes.
+`/` for listing all API's capabilities through MicroTypes for all resources.
 
 Now that we know how to fetch the MicroTypes that the server offers, we need to find
 an appropriate representation for it.
@@ -279,12 +267,12 @@ It is our intention to advice the community to use this solution for the introsp
 but with a response body that describes the MicroTypes availability.
 The structure and semantics of the response could be available in various serializations and formats and the clients could
 specify their preference using the regular, proactive, HTTP negotiation flow of Media Types.
-Although, as we will see later, it comes at a cost, we feel that it's the best among all three solutions presented here
+We feel that it's the best among all three solutions presented here
 and the conceptual notion of OPTIONS method, as described by HTTP specs, matches very well with our intended use case.
 Furthermore, such process gives much more flexibility to append any additional information to the client, than
 an HTTP header.
 
-#### 10.4.2. Well-known URIs and JSON Home
+#### Discovery Well-known URIs and JSON Home
 [RFC 5785](https://tools.ietf.org/html/rfc5785) defines a pre-defined URI for accessing server's various metadata:
 > It is increasingly common for Web-based protocols to require the
 >   discovery of policy or other information about a host ("site-wide
@@ -338,7 +326,7 @@ was not designed to be used for such specific URIs but instead for more generic 
 that usually apply to the host itself.
 
 
-#### 10.4.3. Link relations through HTTP Link header
+#### Discovery through Link relations using HTTP Link header
 Regadless if HTTP OPTIONS or well-known URIs are used, `Link` header, defined in [RFC 5988](https://tools.ietf.org/html/rfc5988),
 is an alternative way of publishing the available MicroTypes by the server,
 in a representation-agnostic way.
@@ -361,11 +349,11 @@ in a representation-agnostic way.
 > --- [RFC 5988](https://tools.ietf.org/html/rfc5988)
 >
 
-As the [next (draft) version of RFC 5988 notes](https://tools.ietf.org/html/draft-nottingham-rfc5988bis-07):
+As the [next version of RFC 5988 (RFC 8288) notes](https://tools.ietf.org/html/draft-nottingham-rfc5988bis-07):
 > a link published through `Link` header can be viewed as a statement of the form
 > "link context has a link relation type resource at link target, which has target attributes".
 >
-> --- [rfc5988bis-07](https://tools.ietf.org/html/draft-nottingham-rfc5988bis-07)
+> --- [RFC 8288](https://tools.ietf.org/html/rfc8288)
 >
 
 As a result, this RFC provides us a representation-agnostic mechanism through which we can
@@ -380,7 +368,7 @@ navigation path.
 Note that title is a target attribute or parameter to this link relation.
 
 
-In the case of Introspected REST, we would use it to announce introspective MicroTypes related
+For our use case, we would use it to announce MicroTypes availability related
 to the resource the client visits.
 By exploiting the target attributes we would also like to specify the HTTP method and
 optionally the Media Type the client should expect in order to introspect
@@ -421,15 +409,15 @@ the client would have to dereference all MicroTypes to figure out their caching 
 
 On a side note, over the past few years, we have seen an explosion of link types
 used along with `Link` header defined by [RFC 5988](https://tools.ietf.org/html/rfc5988).
-The authors of Introspected REST are skeptical with this trend and feel that the `Link` header should
+We are skeptical with this trend and feel that the `Link` header should
 not be overused.
 For instance, having more than 5 links in the `Link` header feels that something is wrong, probably too many things
 are defined in the protocol level whereas maybe they should be defined somewhere else.
 We will let the community to decide if this approach is good for publishing MicroTypes but we would like to stress
 the point that **having a link in the HTTP level through `Link` header might be better
-for related resources that all clients would understand**, which is not always the case in Introspected REST.
+for related resources that all clients would understand**, which is not always the case in MicroTypes.
 The API designer could add more MicroTypes, progressively, as the time passes and simultaneously,
-some clients might not be interested or understand all MicroTypes of an Introspected REST.
+some clients might not be interested or understand all MicroTypes of an API.
 Requiring the client to receive all MicroType information for every data request is made
-would probably be against the principles of Introspected REST.
+would probably be against the principles of modern REST practices.
 
