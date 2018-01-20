@@ -28,8 +28,6 @@ module.exports = function(environment) {
       enabled: environment === 'development'
     },
     'ember-cli-markdown-as-json': {
-      folder: 'content',
-      contentFolder: 'content',
       attributes: {
         index: 'number',
         excludeNav: 'boolean',
@@ -40,6 +38,9 @@ module.exports = function(environment) {
         title: 'string',
         url: 'string'
       },
+    },
+    fastboot: {
+      hostWhitelist: [/(?:(?!%).)*/]
     }
   };
 

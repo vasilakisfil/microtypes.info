@@ -75,6 +75,17 @@ If the server can provide only the less preferred Media Type with the less prefe
 Content-Type: application/vnd.api2+json; pagination=simple-spec; querying=graphql
 ```
 
+## Introspecting a MicroType's configuration
+MicroTypes could be equipped with configuration options so that each API designer to configure it to her needs.
+Configurability for MicroTypes is a quite powerful property because it maximizes reusability since
+it can be adapted to an APIs needs.
+
+Semantics for accessing a MicroType's configuration (also called Introspection) can
+be either specified in the MicroType itself (like sending a `GET` request to a predefined url), or,
+preferably in combination with the parent Media Type. So if the Media Type defines a pattern for accessing
+MicroTypes configurations, the MicroType can specify only the missing parts of it, otherwise the
+MicroType specifies a default URL.
+
 ## Discovery
 Note that discovery semantics are not responsibility of a MicroType but instead of the
 API itself through the parent Media Type.
@@ -208,7 +219,7 @@ determine the capabilities of the server for the targeted resource:
 > --- [RFC 7231](https://tools.ietf.org/html/rfc7231)
 >
 
-The OPTIONS method could be used for the server to provide a list of available introspective MicroTypes
+The OPTIONS method could be used for the server to provide a list of available MicroTypes
 and let the client choose what it thinks best.
 
 
