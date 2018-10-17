@@ -24,7 +24,7 @@
     "ember-cli-babel": "^6.6.0",
     "ember-cli-dependency-checker": "^2.0.0",
     "ember-cli-eslint": "^4.0.0",
-    "ember-cli-fastboot": "https://github.com/ef4/ember-cli-fastboot#89d589a2e4edb4e0eb432ed7cc8680237019aa12",
+    "ember-cli-fastboot": "2.0.0",
     "ember-cli-htmlbars": "^2.0.1",
     "ember-cli-htmlbars-inline-precompile": "^1.0.0",
     "ember-cli-inject-live-reload": "^1.4.1",
@@ -49,10 +49,10 @@
     "loader.js": "^4.2.3",
     "lodash.assign": "^4.2.0",
     "mkdirp": "^0.5.1",
-    "prember": "0.3.0-alpha.1",
+    "prember": "0.4.0",
     "walk-sync": "^0.3.2",
     "yaml-front-matter": "^3.4.0",
-    "ember-cli-markdown-as-json": "kollegorna/ember-cli-markdown-as-json"
+    "ember-cli-markdown-as-json": "file:../../kollegorna/ember-cli-markdown-as-json"
   },
   "engines": {
     "node": "^4.5 || 6.* || >= 7.*"
