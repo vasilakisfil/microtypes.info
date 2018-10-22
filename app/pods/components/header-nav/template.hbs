@@ -10,12 +10,10 @@
       </div>
       <div id="navbarMenu" class="navbar-menu {{isActiveClass}}">
         <div class="navbar-end">
-          {{#with (find-by 'url' "/" model) as |link|}}
-            {{link-to "Overview" "index" class="navbar-item" activeClass="is-active"}}
-          {{/with}}
+          {{link-to "Overview" "index" class="navbar-item" activeClass="is-active"}}
 
-          {{#each (sort-by 'index' (reject-by 'excludeNav' model)) as |content|}}
-            {{link-to content.linkName "content" content.url class="navbar-item" activeClass="is-active"}}
+          {{#each links as |link|}}
+            {{link-to link.name "content" link.path class="navbar-item" activeClass="is-active"}}
           {{/each}}
           {{#link-to "content" content.url class="navbar-item" activeClass="is-active"}}<strong>Playground</strong>
           {{/link-to}}
