@@ -26,17 +26,10 @@ module.exports = function(environment) {
       global: true,
       enabled: environment === 'development'
     },
-    'ember-cli-markdown-as-json': {
-      attributes: {
-        index: 'number',
-        excludeNav: 'boolean',
-        linkName: 'string',
-        name: 'string',
-        path: 'string',
-        subtitle: 'string',
-        title: 'string',
-        url: 'string'
-      },
+    'ember-cli-markdown-resolver': {
+      folders: {
+        'content': 'content'
+      }
     },
     fastboot: {
       hostWhitelist: [/(?:(?!%).)*/]

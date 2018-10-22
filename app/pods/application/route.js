@@ -1,9 +1,12 @@
 import Route from '@ember/routing/route';
+import { get } from '@ember/object';
+import { inject } from '@ember/service';
 
 export default Route.extend({
+  markdownResolver: inject(),
+
   model() {
-    debugger;
-    return this.get('store').findAll('content');
+    return get(this, 'markdownResolver').tree('content');
   }
 });
 
