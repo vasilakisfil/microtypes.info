@@ -34,7 +34,7 @@ Let’s go over each of these options in detail.
 #### Breaking our announced Media Type
 
 One of the main REST constraints is that **representations are exchanged via
-self-descriptive messages***. *This means that the data of the response should
+self-descriptive messages**. This means that the data of the response should
 follow the Media Type that the client requested and understands. Given that the
 client negotiated for that Media Type, it should be able to parse and understand
 any part of the response.
@@ -56,15 +56,15 @@ functionality, will have exactly the same result for the client: not
 self-descriptive messages that will require out-of-band information, like
 documentation, or will lead to undefined behavior. In any case, the result is
 quite counter productive for the machines and obviously that’s the worst option
-we could choose, yet it’s a popular one :/
+we could choose, yet it’s a popular one. :/
 
 #### Defining and publishing a new Media Type
 
 Why not define a new Media Type, just as how our Internet architecture currently
-works ?
+works?
 
 Well, although that’s technically correct, it leads to many side-effects and
-problems down the line. One of the the biggest obstacles of such solution is the
+problems down the line. One of the the biggest obstacles of such a solution is the
 fact that defining a whole new Media Type is quite tough. Moreover, in theory,
 when you override a Media Type spec, you need to publish your changes as a
 complete custom Media Type for *humans* to go through it and program their
@@ -82,7 +82,7 @@ client, like documentation, and demand *humans* to check them before parsing and
 using the hypermedia semantics of our API.
 
 So while this option is the way to go, it’s tough and experience has shown that
-it’s rarely done, in practice we end up with option 1 through a different path
+it’s rarely done, in practice we end up with option 1 through a different path.
 :/
 
 #### The ‘profile’ Link Relation Type

@@ -63,7 +63,7 @@ response, using [JSON pointer](https://tools.ietf.org/html/rfc6901).
 ## Module
 A MicroType is a module after all, meaning that its specification should define
 anything is needed related with its use by the API designers and the API consumers.
-For instance, although discovery is not part of the MicroType it self, the spec
+For instance, although discovery is not part of the MicroType itself, the spec
 should go through the negotiation and discovery methods briefly and specify or
 clarify anything that might be needed or be helpful respectively to the MicroType users.
 
